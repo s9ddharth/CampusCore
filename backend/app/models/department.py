@@ -1,18 +1,64 @@
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import relationship
+from __future__ import annotations
+
 from datetime import datetime
-from database import Base
+
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
 
 class Department(Base):
     __tablename__ = "departments"
 
-    id = Column(Integer, primary_key=True, index=True)
-    code = Column(String(20), unique=True, nullable=False, index=True)  # e.g., "CSE"
-    name = Column(String(150), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    # Relationships
-    students = relationship("Student", back_populates="department")
-    faculties = relationship("Faculty", back_populates="department")
-    sections = relationship("Section", back_populates="department")
-    subjects = relationship("Subject", back_populates="department")
+    name: Mapped[str] = mapped_column(
+        String(150),
+        unique=True,
+        nullable=False,
+    )
+
+    code: Mapped[str] = mapped_column(
+        String(30),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    students: Mapped[list["Student"]] = relationship(
+        "Student",
+        back_populates="department",
+    )
+
+    faculty: Mapped[list["Faculty"]] = relationship(
+        "Faculty",
+        back_populates="department",
+    )
+
+    subjects: Mapped[list["Subject"]] = relationship(
+        "Subject",
+        back_populates="department",
+    )
+
+    sections: Mapped[list["Section"]] = relationship(
+        "Section",
+        back_populates="department",
+    )
+
+    fee_structures: Mapped[list["FeeStructure"]] = relationship(
+        "FeeStructure",
+        back_populates="department",
+        cascade="all, delete-orphan",
+    )

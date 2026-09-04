@@ -1,26 +1,71 @@
-from enum import Enum as PyEnum
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
-from sqlalchemy.orm import relationship
+import enum
 from datetime import datetime
-from database import Base
 
-class UserRole(str, PyEnum):
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
+
+class UserRole(str, enum.Enum):
     ADMIN = "ADMIN"
     FACULTY = "FACULTY"
     STUDENT = "STUDENT"
 
+
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(255), unique=True, nullable=False, index=True)
-    hashed_password = Column(String(255), nullable=False)
-    role = Column(Enum(UserRole), nullable=False, default=UserRole.STUDENT)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
 
-    # Relationships
-    student = relationship("Student", back_populates="user", uselist=False, cascade="all, delete-orphan")
-    faculty = relationship("Faculty", back_populates="user", uselist=False, cascade="all, delete-orphan")
-    audit_logs = relationship("AuditLog", back_populates="user")
+    email: Mapped[str] = mapped_column(
+        String(255),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    password_hash: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+
+    role: Mapped[UserRole] = mapped_column(
+        Enum(UserRole),
+        nullable=False,
+    )
+
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    student = relationship(
+        "Student",
+        back_populates="user",
+        uselist=False,
+    )
+
+    faculty = relationship(
+        "Faculty",
+        back_populates="user",
+        uselist=False,
+    )

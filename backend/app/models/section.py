@@ -1,19 +1,73 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from __future__ import annotations
+
 from datetime import datetime
-from database import Base
+
+from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
 
 class Section(Base):
     __tablename__ = "sections"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(50), nullable=False)  # e.g., "CSE-A"
-    academic_year = Column(String(20), nullable=False)  # e.g., "2025-2026"
-    department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    __table_args__ = (
+        UniqueConstraint(
+            "name",
+            "semester",
+            "academic_year",
+            "department_id",
+            name="uq_section_semester_year_department",
+        ),
+    )
 
-    # Relationships
-    department = relationship("Department", back_populates="sections")
-    students = relationship("Student", back_populates="section")
-    faculty_allocations = relationship("FacultySubject", back_populates="section")
-    attendances = relationship("Attendance", back_populates="section")
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
+    name: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+
+    semester: Mapped[int] = mapped_column(
+        nullable=False,
+        index=True,
+    )
+
+    academic_year: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        index=True,
+    )
+
+    department_id: Mapped[int] = mapped_column(
+        ForeignKey("departments.id", ondelete="RESTRICT"),
+        nullable=False,
+        index=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    department: Mapped["Department"] = relationship(
+        "Department",
+        back_populates="sections",
+    )
+
+    students: Mapped[list["Student"]] = relationship(
+        "Student",
+        back_populates="section",
+    )
+
+    faculty_assignments: Mapped[list["FacultySubject"]] = relationship(
+        "FacultySubject",
+        back_populates="section",
+        cascade="all, delete-orphan",
+    )

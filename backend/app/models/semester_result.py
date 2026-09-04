@@ -1,20 +1,67 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime, UniqueConstraint
-from sqlalchemy.orm import relationship
+from __future__ import annotations
+
 from datetime import datetime
-from database import Base
+from decimal import Decimal
+
+from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
 
 class SemesterResult(Base):
     __tablename__ = "semester_results"
 
-    id = Column(Integer, primary_key=True, index=True)
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
-    semester = Column(Integer, nullable=False)
-    sgpa = Column(Float, nullable=False)
-    cgpa = Column(Float, nullable=False)
-    total_credits = Column(Integer, nullable=False)
-    calculated_at = Column(DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        index=True,
+    )
 
-    __table_args__ = (UniqueConstraint('student_id', 'semester', name='_student_semester_uc'),)
+    student_id: Mapped[int] = mapped_column(
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
 
-    # Relationships
-    student = relationship("Student", back_populates="semester_results")
+    semester: Mapped[int] = mapped_column(
+        nullable=False,
+        index=True,
+    )
+
+    academic_year: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        index=True,
+    )
+
+    gpa: Mapped[Decimal] = mapped_column(
+        Numeric(4, 2),
+        nullable=False,
+    )
+
+    total_credits: Mapped[Decimal] = mapped_column(
+        Numeric(6, 2),
+        nullable=False,
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(20),
+        default="DRAFT",
+        nullable=False,
+        index=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    student: Mapped["Student"] = relationship(
+        "Student",
+    )

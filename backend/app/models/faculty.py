@@ -1,21 +1,75 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from __future__ import annotations
+
 from datetime import datetime
-from database import Base
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
 
 class Faculty(Base):
-    __tablename__ = "faculties"
+    __tablename__ = "faculty"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
-    employee_id = Column(String(50), unique=True, nullable=False, index=True)
-    first_name = Column(String(100), nullable=False)
-    last_name = Column(String(100), nullable=False)
-    designation = Column(String(100), nullable=False)
-    department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    # Relationships
-    user = relationship("User", back_populates="faculty")
-    department = relationship("Department", back_populates="faculties")
-    subject_allocations = relationship("FacultySubject", back_populates="faculty")
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+    )
+
+    employee_id: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    name: Mapped[str] = mapped_column(
+        String(150),
+        nullable=False,
+    )
+
+    phone: Mapped[str | None] = mapped_column(
+        String(20),
+        nullable=True,
+    )
+
+    department_id: Mapped[int] = mapped_column(
+        ForeignKey("departments.id", ondelete="RESTRICT"),
+        nullable=False,
+        index=True,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="faculty",
+    )
+
+    department: Mapped["Department"] = relationship(
+        "Department",
+        back_populates="faculty",
+    )
+
+    assignments: Mapped[list["FacultySubject"]] = relationship(
+        "FacultySubject",
+        back_populates="faculty",
+        cascade="all, delete-orphan",
+    )
+
+    marked_attendance: Mapped[list["Attendance"]] = relationship(
+        "Attendance",
+        back_populates="marker",
+    )
