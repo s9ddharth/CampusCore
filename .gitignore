@@ -31,3 +31,6 @@ Thumbs.db
 
 # Temporary files
 uploads/temp/*
+
+# Test environment
+.pytest_cache/
