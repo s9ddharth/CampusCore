@@ -1,60 +1,55 @@
-class StudentDashboardData {
+class SubjectModel {
+  final int? id;
+  final String code;
   final String name;
-  final String rollNumber;
-  final String semester;
-  final double currentGpa;
-  final double cgpa;
-  final double attendancePercentage;
-  final double feesDue;
-  final List<SubjectSummary> recentResults;
+  final double credits;
+  final int semester;
+  final int? departmentId;
 
-  StudentDashboardData({
+  const SubjectModel({
+    this.id,
+    required this.code,
     required this.name,
-    required this.rollNumber,
+    required this.credits,
     required this.semester,
-    required this.currentGpa,
-    required this.cgpa,
-    required this.attendancePercentage,
-    required this.feesDue,
-    required this.recentResults,
+    this.departmentId,
   });
 
-  factory StudentDashboardData.fromJson(Map<String, dynamic> json) {
-    return StudentDashboardData(
-      name: json['name'] ?? '',
-      rollNumber: json['rollNumber'] ?? '',
-      semester: json['semester'] ?? '',
-      currentGpa: (json['currentGpa'] ?? 0.0).toDouble(),
-      cgpa: (json['cgpa'] ?? 0.0).toDouble(),
-      attendancePercentage: (json['attendancePercentage'] ?? 0.0).toDouble(),
-      feesDue: (json['feesDue'] ?? 0.0).toDouble(),
-      recentResults: (json['recentResults'] as List?)
-              ?.map((e) => SubjectSummary.fromJson(e))
-              .toList() ??
-          [],
+  factory SubjectModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return SubjectModel(
+      id: _toInt(json['id']),
+      code: json['code']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      credits: _toDouble(json['credits']),
+      semester: _toInt(json['semester']) ?? 0,
+      departmentId:
+          _toInt(json['department_id']) ??
+          _toInt(json['departmentId']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'code': code,
+      'name': name,
+      'credits': credits,
+      'semester': semester,
+      'department_id': departmentId,
+    };
   }
 }
 
-class SubjectSummary {
-  final String subjectCode;
-  final String subjectName;
-  final String grade;
-  final double gradePoint;
+int? _toInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  return int.tryParse(value.toString());
+}
 
-  SubjectSummary({
-    required this.subjectCode,
-    required this.subjectName,
-    required this.grade,
-    required this.gradePoint,
-  });
-
-  factory SubjectSummary.fromJson(Map<String, dynamic> json) {
-    return SubjectSummary(
-      subjectCode: json['subjectCode'] ?? '',
-      subjectName: json['subjectName'] ?? '',
-      grade: json['grade'] ?? 'Pending',
-      gradePoint: (json['gradePoint'] ?? 0.0).toDouble(),
-    );
-  }
+double _toDouble(dynamic value) {
+  if (value == null) return 0;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString()) ?? 0;
 }

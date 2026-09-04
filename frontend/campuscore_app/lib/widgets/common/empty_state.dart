@@ -1,40 +1,80 @@
 import 'package:flutter/material.dart';
-import 'app_button.dart';
 
 class EmptyState extends StatelessWidget {
   final String title;
-  final String message;
+  final String? message;
   final IconData icon;
-  final VoidCallback? onRetry;
+  final Widget? action;
+  final double iconSize;
+  final EdgeInsetsGeometry padding;
+  final bool compact;
 
   const EmptyState({
-    Key? key,
-    required this.title,
-    required this.message,
-    this.icon = Icons.inbox,
-    this.onRetry,
-  }) : super(key: key);
+    super.key,
+    this.title = 'No data available',
+    this.message,
+    this.icon = Icons.inbox_outlined,
+    this.action,
+    this.iconSize = 48,
+    this.padding = const EdgeInsets.all(28),
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: compact
+            ? const EdgeInsets.all(16)
+            : padding,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
-            if (onRetry != null) ...[
-              const SizedBox(height: 24),
-              SizedBox(
-                width: 200,
-                child: AppButton(text: 'Retry', onPressed: onRetry),
-              )
-            ]
+            Container(
+              width: compact ? 56 : 72,
+              height: compact ? 56 : 72,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: compact
+                    ? iconSize * 0.7
+                    : iconSize,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (message != null &&
+                message!.trim().isNotEmpty) ...[
+              const SizedBox(height: 6),
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 440,
+                ),
+                child: Text(
+                  message!,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+            if (action != null) ...[
+              const SizedBox(height: 18),
+              action!,
+            ],
           ],
         ),
       ),
