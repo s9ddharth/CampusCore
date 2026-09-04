@@ -1,44 +1,25 @@
-class FacultyDashboardData {
-  final int totalStudents;
-  final int pendingMarksEntries;
-  final List<AssignedSubject> assignedSubjects;
-  
-  FacultyDashboardData({
-    required this.totalStudents,
-    required this.pendingMarksEntries,
-    required this.assignedSubjects,
-  });
-
-  factory FacultyDashboardData.fromJson(Map<String, dynamic> json) {
-    return FacultyDashboardData(
-      totalStudents: json['totalStudents'] ?? 0,
-      pendingMarksEntries: json['pendingMarksEntries'] ?? 0,
-      assignedSubjects: (json['assignedSubjects'] as List?)
-              ?.map((e) => AssignedSubject.fromJson(e))
-              .toList() ?? [],
-    );
-  }
-}
-
-class AssignedSubject {
-  final String subjectCode;
+class FacultyModel {
+  final String id;
   final String name;
-  final String section;
-  final int studentCount;
+  final String employeeId;
+  final String department;
+  final String designation;
 
-  AssignedSubject({
-    required this.subjectCode,
+  FacultyModel({
+    required this.id,
     required this.name,
-    required this.section,
-    required this.studentCount,
+    required this.employeeId,
+    required this.department,
+    required this.designation,
   });
 
-  factory AssignedSubject.fromJson(Map<String, dynamic> json) {
-    return AssignedSubject(
-      subjectCode: json['subjectCode'] ?? '',
+  factory FacultyModel.fromJson(Map<String, dynamic> json) {
+    return FacultyModel(
+      id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
-      section: json['section'] ?? '',
-      studentCount: json['studentCount'] ?? 0,
+      employeeId: json['employeeId'] ?? '',
+      department: json['department'] ?? '',
+      designation: json['designation'] ?? '',
     );
   }
 }
