@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Python virtual environment
+backend/.venv/
+
+# Environment files
+.env
+*.env
+!.env.example
+
+# Flutter / Dart
+frontend/campuscore_app/.dart_tool/
+frontend/campuscore_app/build/
+frontend/campuscore_app/.flutter-plugins
+frontend/campuscore_app/.flutter-plugins-dependencies
+frontend/campuscore_app/.packages
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+uploads/temp/*
