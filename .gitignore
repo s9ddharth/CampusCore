@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Flutter
 .dart_tool/
 .flutter-plugins
@@ -24,6 +25,27 @@ backend/**/__pycache__/
 .env
 *.env
 backend/.env
+=======
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Python virtual environment
+backend/.venv/
+
+# Environment files
+.env
+*.env
+!.env.example
+
+# Flutter / Dart
+frontend/campuscore_app/.dart_tool/
+frontend/campuscore_app/build/
+frontend/campuscore_app/.flutter-plugins
+frontend/campuscore_app/.flutter-plugins-dependencies
+frontend/campuscore_app/.packages
+>>>>>>> 4bfe9cef61d35ba36c297a87a737c3ee62ed3836
 
 # IDE
 .vscode/
@@ -32,3 +54,15 @@ backend/.env
 # OS
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
+=======
+
+# Logs
+*.log
+
+# Temporary files
+uploads/temp/*
+
+# Test environment
+.pytest_cache/
+>>>>>>> 4bfe9cef61d35ba36c297a87a737c3ee62ed3836
