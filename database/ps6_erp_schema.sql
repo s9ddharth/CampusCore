@@ -1,0 +1,21 @@
+-- PS-6 ERP canonical table names
+-- `backend/app/database/models.py` is the source of truth and creates these tables on startup.
+-- Tables (create exactly under these names):
+-- users
+-- students
+-- faculty
+-- departments
+-- subjects
+-- faculty_subjects
+-- sections
+-- attendance
+-- fee_structures
+-- student_fees
+-- payments
+-- assessments
+-- marks
+-- grade_policies
+-- grade_bands
+-- student_results
+-- semester_results
+-- audit_logs
